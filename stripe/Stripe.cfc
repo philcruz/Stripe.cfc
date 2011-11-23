@@ -41,24 +41,37 @@ component accessors="true"
 	// set up the http call and handle the response			
 	function process(string gatewayUrl,struct payload, method="post")
 	{		
-		var httpResponse = doHttp(url=gatewayUrl, payload=arguments.payload, method=arguments.method);
-		var response = deserializeJSON(httpResponse.fileContent);
 		var stripeResponse = createObject("component", "stripe.Response").init();
-		if (structKeyExists( response, "error" ))
-		{	
-			//failure
+		var httpResponse = doHttp(url=gatewayUrl, payload=arguments.payload, method=arguments.method);
+		var status = reReplace(httpResponse.statusCode, "[^0-9]", "", "ALL");
+		
+		if (status NEQ "200")
+		{
+			stripeResponse.setErrorType("http_error");
+			stripeResponse.setErrorMessage("Gateway returned unknown response: #status#: #httpResponse.errorDetail#");
 			stripeResponse.setStatus("failure");
-			stripeResponse.setErrorType(response.error.type);
-			stripeResponse.setErrorMessage(response.error.message);	
-		} 
+		}
 		else
 		{
-			// success					
-			stripeResponse.setStatus("success");
-			if (isDefined('response.ID')) stripeResponse.setID(response.ID);
-			if (isDefined('response.object')) stripeResponse.setObject(response.object);			
+			var response = deserializeJSON(httpResponse.fileContent);
+		
+			if (structKeyExists( response, "error" ))
+			{	
+				//failure
+				stripeResponse.setStatus("failure");
+				stripeResponse.setErrorType(response.error.type);
+				stripeResponse.setErrorMessage(response.error.message);	
+			} 
+			else
+			{
+				// success					
+				stripeResponse.setStatus("success");
+				if (isDefined('response.ID')) stripeResponse.setID(response.ID);
+				if (isDefined('response.object')) stripeResponse.setObject(response.object);			
+			}
+			stripeResponse.setRawResponse(response);	
 		}
-		stripeResponse.setRawResponse(response);
+				
 		return stripeResponse;
 	}
 	
