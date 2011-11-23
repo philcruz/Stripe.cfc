@@ -25,19 +25,15 @@ component accessors="true"
 	function retrieveCharge(required string id)
 	{
 		var gateway = variables.gatewayBaseUrl & "charges/" & trim(arguments.id);
-		var payload = structNew();	
-		payload.amount = arguments.money.getCents();
-		payload.currency = arguments.money.getCurrency();
-		payload.card = arguments.token;
-		payload.description = arguments.description;		
+		var payload = structNew();
 				
-		return process(gatewayUrl=gateway, payload = payload);
+		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 
 	// set up the http call and handle the response			
-	function process(string gatewayUrl,struct payload)
+	function process(string gatewayUrl,struct payload, method="post")
 	{		
-		var httpResponse = doHttp(url=gatewayUrl, payload=arguments.payload, method="post");
+		var httpResponse = doHttp(url=gatewayUrl, payload=arguments.payload, method=arguments.method);
 		var response = deserializeJSON(httpResponse.fileContent);
 		var stripeResponse = createObject("component", "stripe.Response").init();
 		if (structKeyExists( response, "error" ))

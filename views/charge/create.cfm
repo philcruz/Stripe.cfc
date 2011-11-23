@@ -91,7 +91,7 @@
 <cfif isDefined('stripeResponse')>
 	<h3>#stripeResponseMessage#</h3>
 	<cfif stripeResponse.getSuccess()>
-		id: #stripeResponse.getID()#<br />
+		id: <a href="#buildUrl('charge.retrieve?id=#stripeResponse.getID()#')#">#stripeResponse.getID()#</a><br />
 		amount: #dollarFormat(stripeResponse.getRawResponse().amount / 100)#<br />
 	<cfelse>
 		errorType: #stripeResponse.getErrorType()#<br />
@@ -245,6 +245,5 @@
 		);
 	}
 </script>
- 
- 
+  
 </cfoutput>
