@@ -38,73 +38,29 @@
 			responseJSON = serializeJSON( response );
 			cfcontent(data="#toBinary( toBase64( responseJSON ) )#");
 			request.layout = false; //no layout since just returning data via AJAX		
-		}
-  				
+		}  				
 		if (!arrayLen(errors))
 		{									
 			try
-			{	
-				if (true)
+			{									
+				stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);										
+				money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("USD");					
+				stripeResponse = stripe.createCharge(money=money,token=rc.stripeToken,description="testing with the Stripe.cfc");
+				
+				//check the response and handle it as needed
+				if (stripeResponse.getSuccess())
 				{
-					stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);										
-					money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("USD");					
-					stripeResponse = stripe.createCharge(money=money,token=rc.stripeToken,description="testing with the Stripe.cfc");
-					
-					//check the response and handle it as needed
-					if (stripeResponse.getSuccess())
-					{
-						//handle the success, you may want to update the database and redirect to a confirmation
-						//for now we just set a message
-						stripeResponseMessage = "The charge succeeded";
-					}
-					else
-					{
-						///handle the failure, you may want to send a notification email or log it
-						//for now we just set a message
-						stripeResponseMessage = "The charge had errors";									
-					}
+					//handle the success, you may want to update the database and redirect to a confirmation
+					//for now we just set a message
+					stripeResponseMessage = "The charge succeeded";
 				}
 				else
 				{
-				httpService = new http(method="post", url="https://api.stripe.com/v1/charges", username="#application.stripeSecretKey#", password=""); 
-				httpService.addParam(type="formfield",name="amount",value="#(rc.amount * 100)#"); 
-				httpService.addParam(type="formfield",name="currency",value="usd"); 
-				httpService.addParam(type="formfield",name="card",value="#rc.stripeToken#"); 
-				httpService.addParam(type="formfield",name="description",value="Testing the Stripe.com API. (#rc.email#)."); 
-				charge =  httpService.send().getPrefix(); 				
-				response = deserializeJSON( charge.fileContent );
-				writeDump(response);
-				
-				stripeResponse = createObject("component", "stripe.Response").init();
-				if (structKeyExists( response, "error" ))
-				{	
-					//failure
-					stripeResponse.setStatus("failure");
-					stripeResponse.setErrorType(response.error.type);
-					stripeResponse.setErrorMessage(response.error.message);
-					arrayAppend(errors, response.error.message); 					
-					//throw(type="InvalidRequestError");
-				} 
-				else
-				{
-					// success					
-					stripeResponse.setStatus("success");
-					stripeResponse.setTransactionID(response.ID);	
-					stripeResponse.setAmount(response.amount);
-					stripeResponse.setCurrency(response.currency);
-					stripeResponse.setDescription(response.description);
-					stripeResponse.setFee(response.fee);					
-					stripeResponse.setPaid(ucase(response.paid) EQ "YES");
-					stripeResponse.setRawResponse(response);
-					
-					//location(url="#buildUrl('main.message?messageID=create_charge_success')#", addtoken=false);
-				}		 				
-				}				
+					///handle the failure, you may want to send a notification email or log it
+					//for now we just set a message
+					stripeResponseMessage = "The charge had errors";									
+				}							
 			}
-			//catch(InvalidRequestError excp)
-			//{
-				//do nothing
-			//}
 			catch(any excp)
 			{
 				writeDump(excp);
