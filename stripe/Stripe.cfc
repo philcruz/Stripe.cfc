@@ -29,6 +29,14 @@ component accessors="true"
 				
 		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
+	
+	function listCharges( numeric count=10)
+	{
+		var gateway = variables.gatewayBaseUrl & "charges?count=" & trim(arguments.count);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
 
 	// set up the http call and handle the response			
 	function process(string gatewayUrl,struct payload, method="post")
@@ -47,8 +55,8 @@ component accessors="true"
 		{
 			// success					
 			stripeResponse.setStatus("success");
-			stripeResponse.setID(response.ID);
-			stripeResponse.setObject(response.object);			
+			if (isDefined('response.ID')) stripeResponse.setID(response.ID);
+			if (isDefined('response.object')) stripeResponse.setObject(response.object);			
 		}
 		stripeResponse.setRawResponse(response);
 		return stripeResponse;
