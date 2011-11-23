@@ -17,4 +17,7 @@ Basic usage is like:
 	else
 	{
 		//handle the failure, you may want to send a notification email or log it										
-	}							
+	}
+	
+FW/1 (https://github.com/seancorfield/fw1) is the framework used for this web application
+but that is not required to use Stripe.cfc in your own application. 							
