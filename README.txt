@@ -1,2 +1,20 @@
 
 Stripe.cfc is a ColdFusion api binding for http://stripe.com.
+
+This project is a complete web application and expects to live in its own webroot. To use Stripe.cfc
+in your own web application, you can copy the stripe folder to your webroot or create a mapping to it.
+Basic usage is like:
+
+    stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);										
+    money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("USD");					
+    stripeResponse = stripe.createCharge(money=money,token=rc.stripeToken,description="testing with the Stripe.cfc");
+    			
+	//check the response and handle it as needed
+	if (stripeResponse.getSuccess())
+	{
+		//handle the success, you may want to update the database and redirect to a confirmation
+	}
+	else
+	{
+		//handle the failure, you may want to send a notification email or log it										
+	}							
