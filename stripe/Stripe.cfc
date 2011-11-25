@@ -10,6 +10,20 @@ component accessors="true"
 		return this;
 	}
 	
+	function createPlan(id,amount,currency,interval,name,trial_period_days)
+	{
+		var gateway = variables.gatewayBaseUrl & "plans";
+		var payload = structNew();					
+		payload.id = arguments.id;
+		payload.amount = arguments.amount;
+		payload.currency = arguments.currency;
+		payload.interval = arguments.interval;
+		payload.name = arguments.name;
+		payload.trial_period_days = arguments.trial_period_days;
+						
+		return process(gatewayUrl=gateway, payload = payload);
+	}
+	
 	function createCustomer(required string token,required string email, string description="")
 	{
 		var gateway = variables.gatewayBaseUrl & "customers";
@@ -27,6 +41,15 @@ component accessors="true"
 		var payload = structNew();
 				
 		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function updateCustomer(required string id, string email, string description)
+	{
+		var gateway = variables.gatewayBaseUrl & "customers/" & trim(arguments.id);
+		var payload = structNew();
+		payload.email = arguments.email;
+		payload.description = arguments.description;		
+		return process(gatewayUrl=gateway, payload = payload, method="post");
 	}
 	
 	function listCustomers( numeric count=10)
@@ -85,6 +108,7 @@ component accessors="true"
 			stripeResponse.setErrorType("http_error");
 			stripeResponse.setErrorMessage("Gateway returned unknown response: #status#: #httpResponse.errorDetail#");
 			stripeResponse.setStatus("failure");
+			stripeResponse.setRawResponse(httpResponse);
 		}
 		else
 		{

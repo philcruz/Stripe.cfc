@@ -15,6 +15,7 @@
 		<th>Description</th>
 		<th>Email</th>
 		<th>Created</th>
+		<th></th>
 	</thead>
 <cfoutput>
 <cfloop from="1" to="#arrayLen(customers)#" index="i">
@@ -23,6 +24,7 @@
 		<td>#customers[i].description#</td>
 		<td>#customers[i].email#</td>
 		<td>#customers[i].created#</td>
+		<td><a href="#buildUrl('customer.update?id=#customers[i].id#')#">Update</a></td>
 
 	</tr>
 </cfloop>
