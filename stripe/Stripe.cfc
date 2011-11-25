@@ -21,6 +21,22 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload);
 	}
 	
+	function retrieveCustomer(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "customers/" & trim(arguments.id);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function listCustomers( numeric count=10)
+	{
+		var gateway = variables.gatewayBaseUrl & "customers?count=" & trim(arguments.count);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
 	function createCharge(required money,required string token,string description="")
 	{
 		var gateway = variables.gatewayBaseUrl & "charges";

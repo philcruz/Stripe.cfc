@@ -14,4 +14,6 @@
 <strong>Customers</strong>
 <ul>
 	<li><a href="<cfoutput>#buildUrl('customer.create')#</cfoutput>" >Create a Customer</a></li>
+	<li><a href="<cfoutput>#buildUrl('customer.retrieve')#</cfoutput>" >Retrieve a Customer</a></li>
+	<li><a href="<cfoutput>#buildUrl('customer.list')#</cfoutput>" >List Customers</a></li>
 </ul>
