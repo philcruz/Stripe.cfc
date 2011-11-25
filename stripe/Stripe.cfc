@@ -10,6 +10,17 @@ component accessors="true"
 		return this;
 	}
 	
+	function createCustomer(required string token,required string email, string description="")
+	{
+		var gateway = variables.gatewayBaseUrl & "customers";
+		var payload = structNew();					
+		payload.card = arguments.token;
+		payload.email = arguments.email;
+		payload.description = arguments.description;		
+						
+		return process(gatewayUrl=gateway, payload = payload);
+	}
+	
 	function createCharge(required money,required string token,string description="")
 	{
 		var gateway = variables.gatewayBaseUrl & "charges";
@@ -28,6 +39,14 @@ component accessors="true"
 		var payload = structNew();
 				
 		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function refundCharge(required string id, numeric amount)
+	{
+		var gateway = variables.gatewayBaseUrl & "charges/" & trim(arguments.id) & "/refund";
+		var payload = structNew();
+		payload.amount = arguments.amount;
+		return process(gatewayUrl=gateway, payload = payload, method="post");
 	}
 	
 	function listCharges( numeric count=10)
