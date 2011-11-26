@@ -46,6 +46,6 @@
 	</p>
 	
 	<p>
-		<input type="submit" value="Update customer" />
+		<input type="submit" value="Update Customer" />
 	</p>
 </form>

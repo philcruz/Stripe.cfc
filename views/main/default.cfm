@@ -22,4 +22,15 @@
 <strong>Plans</strong>
 <ul>
 	<li><a href="<cfoutput>#buildUrl('plan.create')#</cfoutput>" >Create a Plan</a></li>
+	<li><a href="<cfoutput>#buildUrl('plan.retrieve')#</cfoutput>" >Retrieve a Plan</a></li>
+	<li><a href="<cfoutput>#buildUrl('plan.delete')#</cfoutput>" >Delete Plan</a></li>
+	<li><a href="<cfoutput>#buildUrl('plan.list')#</cfoutput>" >List Plans</a></li>
+</ul>
+<br /><br />
+<strong>Coupons</strong>
+<ul>
+	<li><a href="<cfoutput>#buildUrl('coupon.create')#</cfoutput>" >Create a Coupon</a></li>
+	<li><a href="<cfoutput>#buildUrl('coupon.retrieve')#</cfoutput>" >Retrieve a Coupon</a></li>
+	<li><a href="<cfoutput>#buildUrl('coupon.delete')#</cfoutput>" >Delete Coupon</a></li>
+	<li><a href="<cfoutput>#buildUrl('coupon.list')#</cfoutput>" >List Coupons</a></li>
 </ul>

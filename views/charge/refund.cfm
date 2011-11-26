@@ -43,6 +43,6 @@
 	</p>
 	
 	<p>
-		<input type="submit" value="Refund charge" />
+		<input type="submit" value="Refund Charge" />
 	</p>
 </form>

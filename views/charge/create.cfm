@@ -45,7 +45,7 @@
 			{									
 				stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);										
 				money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("USD");					
-				stripeResponse = stripe.createCharge(money=money,token=rc.stripeToken,description="testing with the Stripe.cfc");
+				stripeResponse = stripe.createCharge(money=money,card=rc.stripeToken,description="testing with the Stripe.cfc");
 				
 				//check the response and handle it as needed
 				if (stripeResponse.getSuccess())
@@ -146,7 +146,7 @@
 	</p>
 
 	<p>
-		<input type="submit" value="Create charge" />
+		<input type="submit" value="Create Charge" />
 	</p>
  
 </form>

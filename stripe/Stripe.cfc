@@ -10,6 +10,43 @@ component accessors="true"
 		return this;
 	}
 	
+	function createCoupon(id,percent_off,duration,duration_in_months="",max_redemptions="",redeem_by="")
+	{
+		var gateway = variables.gatewayBaseUrl & "coupons";
+		var payload = structNew();					
+		payload.id = arguments.id;
+		payload.percent_off= arguments.percent_off;
+		payload.duration = arguments.duration;
+		if (len(trim(arguments.duration_in_months))) payload.duration_in_months = arguments.duration_in_months;
+		if (len(trim(arguments.max_redemptions))) payload.max_redemptions = arguments.max_redemptions;
+		if (len(trim(arguments.redeem_by))) payload.redeem_by =  dateToUTC(arguments.redeem_by);
+						
+		return process(gatewayUrl=gateway, payload = payload);
+	}
+	
+	function retrieveCoupon(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "coupons/" & trim(arguments.id);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function deleteCoupon(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "coupons/" & trim(arguments.id);
+		var payload = structNew();				
+		return process(gatewayUrl=gateway, payload = payload, method="delete");
+	}
+	
+	function listCoupons( numeric count=10)
+	{
+		var gateway = variables.gatewayBaseUrl & "coupons?count=" & trim(arguments.count);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
 	function createPlan(id,amount,currency,interval,name,trial_period_days)
 	{
 		var gateway = variables.gatewayBaseUrl & "plans";
@@ -24,11 +61,35 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload);
 	}
 	
-	function createCustomer(required string token,required string email, string description="")
+	function retrievePlan(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "plans/" & trim(arguments.id);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function deletePlan(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "plans/" & trim(arguments.id);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="delete");
+	}
+	
+	function listPlans( numeric count=10)
+	{
+		var gateway = variables.gatewayBaseUrl & "plans?count=" & trim(arguments.count);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function createCustomer(required string card,required string email, string description="")
 	{
 		var gateway = variables.gatewayBaseUrl & "customers";
 		var payload = structNew();					
-		payload.card = arguments.token;
+		payload.card = arguments.card;
 		payload.email = arguments.email;
 		payload.description = arguments.description;		
 						
@@ -60,13 +121,13 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 	
-	function createCharge(required money,required string token,string description="")
+	function createCharge(required money,required string card,string description="")
 	{
 		var gateway = variables.gatewayBaseUrl & "charges";
 		var payload = structNew();	
 		payload.amount = arguments.money.getCents();
 		payload.currency = arguments.money.getCurrency();
-		payload.card = arguments.token;
+		payload.card = arguments.card;
 		payload.description = arguments.description;		
 				
 		return process(gatewayUrl=gateway, payload = payload);
@@ -152,6 +213,18 @@ component accessors="true"
 			}
 		}		
 		return httpService.send().getPrefix(); 							
+	}
+	
+	//convert a date to UTC timestamp (epoch seconds)
+	function dateToUTC(required date)
+	{		
+		return DateDiff("s", DateConvert("utc2Local", "January 1 1970 00:00"), arguments.date);
+	}
+	
+	//convert a UTC timestamp (epoch seconds) to a date
+	function UTCToDate(utcDate)
+	{
+		return DateAdd("s",arguments.utcDate,DateConvert("utc2Local", "January 1 1970 00:00"));
 	}
 }
 

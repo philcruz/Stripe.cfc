@@ -6,17 +6,17 @@
 	if (rc.isFormSubmitted EQ "yes")
 	{
 		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
-		stripeResponse = stripe.retrieveCustomer(id=rc.id);
+		stripeResponse = stripe.retrieveCoupon(id=rc.id);
 	}
 </cfscript>
 
-<h2>Retrieving Customer</h2>
+<h2>Retrieving Coupon</h2>
 
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		description: #stripeResponse.getRawResponse().description#<br />
-		email: #stripeResponse.getRawResponse().email#<br />
+		id: #stripeResponse.getRawResponse().id#<br />
+		percent_off: #stripeResponse.getRawResponse().percent_off#<br />
 	<cfelse>
 		errorType: #stripeResponse.getErrorType()#<br />
 		errorMessage: #stripeResponse.getErrorMessage()#<br />
@@ -26,14 +26,14 @@
 </cfif>
 </cfoutput>
 
-<form action="<cfoutput>#buildUrl('customer.retrieve')#</cfoutput>" method="post">
+<form action="<cfoutput>#buildUrl('coupon.retrieve')#</cfoutput>" method="post">
 	<input type="hidden" name="isFormSubmitted" value="yes" />
 	<p>
-		Customer ID:<br />
+		Coupon ID:<br />
 		<input type="text" name="id" value="<cfoutput>#htmlEditFormat( rc.id)#</cfoutput>" size="20" />
 	</p>
 	
 	<p>
-		<input type="submit" value="Retrieve Customer" />
+		<input type="submit" value="Retrieve Coupon" />
 	</p>
 </form>

@@ -19,7 +19,6 @@
  	 	
 		if (!len( rc.name )) 				arrayAppend( errors, "Please enter your name." );
  		if (!isValid( "email", rc.email ) ) arrayAppend( errors, "Please enter a valid email." );
-  		//if (rc.amount lt 1) 				arrayAppend( errors, "Please select an amount." );
 		if (!len( rc.stripeToken )) 		arrayAppend( errors, "Please enter a valid credit card." ); 
 		
 		if (rc.isAjaxRequest)
@@ -43,9 +42,8 @@
 		{									
 			try
 			{									
-				stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);										
-				//money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("USD");					
-				stripeResponse = stripe.createCustomer(token=rc.stripeToken,email=rc.email,description=rc.name);
+				stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);													
+				stripeResponse = stripe.createCustomer(card=rc.stripeToken,email=rc.email,description=rc.name);
 				
 				//check the response and handle it as needed
 				if (stripeResponse.getSuccess())
@@ -117,17 +115,6 @@
 		<input type="text" name="email" value="#htmlEditFormat( rc.email )#" size="20" />
 	</p>
  
-<!--- 	<p>
-		Amount:<br />
-		<select name="amount">
-			<option value="1">$1</option>
-			<option value="2">$2</option>
-			<option value="3">$3</option>
-			<option value="4">$4</option>
-			<option value="5">$5</option>
-		</select>
-	</p> --->
- 
 	<p>
 		Credit Card:<br />
 		<input type="text" value="4242424242424242" size="20" class="creditCard" />
@@ -146,7 +133,7 @@
 	</p>
 
 	<p>
-		<input type="submit" value="Create charge" />
+		<input type="submit" value="Create Customer" />
 	</p>
  
 </form>
@@ -159,7 +146,6 @@
 	dom.stripeToken = dom.form.find( "input[ name = 'stripeToken' ]" );
 	dom.name = dom.form.find( "input[ name = 'name' ]" );
 	dom.email = dom.form.find( "input[ name = 'email' ]" );
-	//dom.amount = dom.form.find( "select[ name = 'amount' ]" );
 	dom.creditCard = dom.form.find( "input.creditCard" );
 	dom.expirationMonth = dom.form.find( "input.expirationMonth" );
 	dom.expirationYear = dom.form.find( "input.expirationYear" );
@@ -185,9 +171,6 @@
 					exp_year: dom.expirationYear.val(),
 					cvc: dom.securityCode.val()
 				},
-
-				// The amount of the purchase in cents
-				//(dom.amount.val() * 100),
 
 				// The callback to handle the token
 				tokenHandler
@@ -221,7 +204,6 @@
 				isAjaxRequest: true,
 				name: dom.name.val(),
 				email: dom.email.val(),
-				//amount: dom.amount.val(),
 				stripeToken: response.id
 			},
 			dataType: "json"

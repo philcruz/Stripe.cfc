@@ -20,7 +20,7 @@
 	<tr>
 		<td><a href="#buildUrl('charge.retrieve?id=#charges[i].id#')#">#charges[i].id#</a></td>
 		<td>#dollarFormat(charges[i].amount/100)#</td>
-		<td>#charges[i].created#</td>
+		<td>#dateFormat(stripe.UTCToDate(charges[i].created),'mm-dd-yyyy')# </td>
 		<td><a href="#buildUrl('charge.refund?id=#charges[i].id#&amount=#charges[i].amount#')#">Refund</a></td>
 	</tr>
 </cfloop>

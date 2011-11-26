@@ -6,17 +6,17 @@
 	if (rc.isFormSubmitted EQ "yes")
 	{
 		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
-		stripeResponse = stripe.retrieveCustomer(id=rc.id);
+		stripeResponse = stripe.deletePlan(id=rc.id);
 	}
 </cfscript>
 
-<h2>Retrieving Customer</h2>
+<h2>Delete Plan</h2>
 
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		description: #stripeResponse.getRawResponse().description#<br />
-		email: #stripeResponse.getRawResponse().email#<br />
+		id: #stripeResponse.getRawResponse().id#<br />
+		deleted: #stripeResponse.getRawResponse().deleted#<br />
 	<cfelse>
 		errorType: #stripeResponse.getErrorType()#<br />
 		errorMessage: #stripeResponse.getErrorMessage()#<br />
@@ -26,14 +26,14 @@
 </cfif>
 </cfoutput>
 
-<form action="<cfoutput>#buildUrl('customer.retrieve')#</cfoutput>" method="post">
+<form action="<cfoutput>#buildUrl('plan.delete')#</cfoutput>" method="post">
 	<input type="hidden" name="isFormSubmitted" value="yes" />
 	<p>
-		Customer ID:<br />
+		Plan ID:<br />
 		<input type="text" name="id" value="<cfoutput>#htmlEditFormat( rc.id)#</cfoutput>" size="20" />
 	</p>
 	
 	<p>
-		<input type="submit" value="Retrieve Customer" />
+		<input type="submit" value="Delete Plan" />
 	</p>
 </form>

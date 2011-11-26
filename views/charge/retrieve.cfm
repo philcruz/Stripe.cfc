@@ -33,6 +33,6 @@
 	</p>
 	
 	<p>
-		<input type="submit" value="Retrieve charge" />
+		<input type="submit" value="Retrieve Charge" />
 	</p>
 </form>
