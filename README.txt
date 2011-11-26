@@ -7,7 +7,7 @@ Basic usage is like:
 
     stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);										
     money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("USD");					
-    stripeResponse = stripe.createCharge(money=money,token=rc.stripeToken,description="testing with the Stripe.cfc");
+    stripeResponse = stripe.createCharge(money=money,card=rc.stripeToken,description="testing with the Stripe.cfc");
     			
 	//check the response and handle it as needed
 	if (stripeResponse.getSuccess())
@@ -18,6 +18,10 @@ Basic usage is like:
 	{
 		//handle the failure, you may want to send a notification email or log it										
 	}
+
+Implements the Charges, Customers, Plans and Coupons functions of the Stripe API.
+
+Support: http://groups.google.com/group/stripecfc/
 	
 FW/1 (https://github.com/seancorfield/fw1) is the framework used for this web application
 but that is not required to use Stripe.cfc in your own application. 							

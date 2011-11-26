@@ -1,3 +1,6 @@
+<cfscript>
+	stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
+</cfscript>
 
 <div>
 	Stripe.cfc is a ColdFusion api binding for http://stripe.com.
@@ -34,3 +37,7 @@
 	<li><a href="<cfoutput>#buildUrl('coupon.delete')#</cfoutput>" >Delete Coupon</a></li>
 	<li><a href="<cfoutput>#buildUrl('coupon.list')#</cfoutput>" >List Coupons</a></li>
 </ul>
+<br /><br />
+Version: <cfoutput>#stripe.getVersion()#</cfoutput>
+
+

@@ -10,6 +10,11 @@ component accessors="true"
 		return this;
 	}
 	
+	function getVersion()
+	{
+		return "0.9.0";
+	}
+	
 	function createCoupon(id,percent_off,duration,duration_in_months="",max_redemptions="",redeem_by="")
 	{
 		var gateway = variables.gatewayBaseUrl & "coupons";
