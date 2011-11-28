@@ -19,7 +19,8 @@ Basic usage is like:
 		//handle the failure, you may want to send a notification email or log it										
 	}
 
-Implements the Charges, Customers, Plans and Coupons functions of the Stripe API.
+Implements all the functions of the Stripe API:
+Charges, Customers, Plans, Coupons, Subscriptions, Invoice Items, Invoices, and Tokens
 
 Support: http://groups.google.com/group/stripecfc/
 	

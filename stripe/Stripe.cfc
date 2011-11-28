@@ -12,7 +12,94 @@ component accessors="true"
 	
 	function getVersion()
 	{
-		return "0.9.0";
+		return "1.0.0";
+	}
+	
+	function updateSubscription(id,plan,prorate=true,trial_end="",card="")
+	{
+		var gateway = variables.gatewayBaseUrl & "customers/" & trim(arguments.id) & "/subscription";
+		var payload = structNew();
+		payload.plan = arguments.plan;
+		payload.prorate = arguments.prorate;		
+		return process(gatewayUrl=gateway, payload = payload, method="post");		
+	}
+	
+	function cancelSubscription(id,plan,at_period_end=false)
+	{
+		var gateway = variables.gatewayBaseUrl & "customers/" & trim(arguments.id) & "/subscription";
+		var payload = structNew();
+		payload.at_period_end= arguments.at_period_end;
+		return process(gatewayUrl=gateway, payload = payload, method="delete");		
+	}
+	
+	function retrieveInvoice(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "invoices/" & trim(arguments.id);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function retrieveUpcomingInvoice(required string customer)
+	{
+		var gateway = variables.gatewayBaseUrl & "invoices/upcoming?customer=" & trim(arguments.customer);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function listInvoices( numeric count=10)
+	{
+		var gateway = variables.gatewayBaseUrl & "invoices?count=" & trim(arguments.count);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function createInvoiceItem(customer,amount,currency,description)
+	{
+		var gateway = variables.gatewayBaseUrl & "invoiceitems";
+		var payload = structNew();					
+		payload.customer = arguments.customer;
+		payload.amount = arguments.amount;
+		payload.currency = arguments.currency;
+		payload.description = arguments.description;
+						
+		return process(gatewayUrl=gateway, payload = payload);
+	}
+	
+	function updateInvoiceItem(id,amount,currency="usd",description)
+	{
+		var gateway = variables.gatewayBaseUrl & "invoiceitems/" & arguments.id;
+		var payload = structNew();					
+		payload.amount = arguments.amount;
+		payload.currency = arguments.currency;
+		payload.description = arguments.description;
+						
+		return process(gatewayUrl=gateway, payload = payload);
+	}
+	
+	function retrieveInvoiceItem(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "invoiceitems/" & trim(arguments.id);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function deleteInvoiceItem(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "invoiceitems/" & trim(arguments.id);
+		var payload = structNew();				
+		return process(gatewayUrl=gateway, payload = payload, method="delete");
+	}
+	
+	function listInvoiceItems( numeric count=10)
+	{
+		var gateway = variables.gatewayBaseUrl & "invoiceitems?count=" & trim(arguments.count);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 	
 	function createCoupon(id,percent_off,duration,duration_in_months="",max_redemptions="",redeem_by="")
@@ -157,6 +244,26 @@ component accessors="true"
 	function listCharges( numeric count=10)
 	{
 		var gateway = variables.gatewayBaseUrl & "charges?count=" & trim(arguments.count);
+		var payload = structNew();
+				
+		return process(gatewayUrl=gateway, payload = payload, method="get");
+	}
+	
+	function createToken(required string number,exp_month,exp_year,cvc,name="",address_line1="", address_line2="", address_zip="",address_state="",address_country="",amount="",currency="usd")
+	{
+		var gateway = variables.gatewayBaseUrl & "tokens";
+		var payload = structNew();					
+		payload["card[number]"] = arguments.number;
+		payload["card[exp_month]"] = arguments.exp_month;
+		payload["card[exp_year]"] = arguments.exp_year;
+		payload["card[cvc]"] = arguments.cvc;		
+						
+		return process(gatewayUrl=gateway, payload = payload);
+	}
+	
+	function retrieveToken(required string id)
+	{
+		var gateway = variables.gatewayBaseUrl & "tokens/" & trim(arguments.id);
 		var payload = structNew();
 				
 		return process(gatewayUrl=gateway, payload = payload, method="get");

@@ -38,6 +38,33 @@
 	<li><a href="<cfoutput>#buildUrl('coupon.list')#</cfoutput>" >List Coupons</a></li>
 </ul>
 <br /><br />
+<strong>Subscriptions</strong>
+<ul>
+	<li><a href="<cfoutput>#buildUrl('subscription.update')#</cfoutput>" >Update Subscription</a></li>
+	<li><a href="<cfoutput>#buildUrl('subscription.cancel')#</cfoutput>" >Cancel Subscription</a></li>
+</ul>
+<br /><br />
+<strong>Invoices</strong>
+<ul>
+	<li><a href="<cfoutput>#buildUrl('invoice.retrieve')#</cfoutput>" >Retrieve an Invoice</a></li>
+	<li><a href="<cfoutput>#buildUrl('invoice.retrieveupcoming')#</cfoutput>" >Retrieve an Upcoming Invoice</a></li>
+	<li><a href="<cfoutput>#buildUrl('invoice.list')#</cfoutput>" >List Invoices</a></li>
+</ul>
+<br /><br />
+<strong>Invoice Items</strong>
+<ul>
+	<li><a href="<cfoutput>#buildUrl('invoiceitem.create')#</cfoutput>" >Create Invoice Item</a></li>	
+	<li><a href="<cfoutput>#buildUrl('invoiceitem.list')#</cfoutput>" >List Invoice Items</a></li>
+</ul>
+<br /><br />
+<strong>Tokens</strong>
+<ul>
+	<li><a href="<cfoutput>#buildUrl('token.create')#</cfoutput>" >Create Token</a></li>	
+	<li><a href="<cfoutput>#buildUrl('token.retrieve')#</cfoutput>" >Retrieve Token</a></li>	
+</ul>
+<br /><br />
+
+
 Version: <cfoutput>#stripe.getVersion()#</cfoutput>
 
 
