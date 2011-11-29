@@ -27,7 +27,7 @@ component accessors="true"
 	
 	function getVersion()
 	{
-		return "1.0.1";
+		return "1.0.2";
 	}
 	
 	function updateSubscription(id,plan,prorate=true,trial_end="",card="")
@@ -298,17 +298,19 @@ component accessors="true"
 			switch(status)
 			{
 				case "400":
+				case "401":
+				case "402":
 				case "404":
-					response = deserializeJSON(httpResponse.fileContent);
-					stripeResponse.setStatus("failure");
-					stripeResponse.setErrorType(response.error.type);
+					response = deserializeJSON(httpResponse.fileContent);					
+					stripeResponse.setErrorType(response.error.type);					
 					stripeResponse.setErrorMessage(response.error.message);	
+					if (isDefined('response.error.code')) stripeResponse.setErrorCode(response.error.code);
 					break;
 				default:
 					stripeResponse.setErrorType("http_error");
-					stripeResponse.setErrorMessage("Gateway returned unknown response: #status#: #httpResponse.errorDetail#");
-					stripeResponse.setStatus("failure");					
-			}			
+					stripeResponse.setErrorMessage("Gateway returned unknown response: #status#: #httpResponse.errorDetail#");					
+			}
+			stripeResponse.setStatus("failure");
 		}
 		else
 		{
@@ -319,6 +321,7 @@ component accessors="true"
 				//failure
 				stripeResponse.setStatus("failure");
 				stripeResponse.setErrorType(response.error.type);
+				stripeResponse.setErrorCode(response.error.code);
 				stripeResponse.setErrorMessage(response.error.message);	
 			} 
 			else

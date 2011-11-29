@@ -22,6 +22,8 @@ Basic usage is like:
 Implements all the functions of the Stripe API:
 Charges, Customers, Plans, Coupons, Subscriptions, Invoice Items, Invoices, and Tokens
 
+Supported CFML engines: ColdFusion 9.0.1 or Railo 3.3.1
+
 Support: http://groups.google.com/group/stripecfc/
 	
 FW/1 (https://github.com/seancorfield/fw1) is the framework used for this web application
@@ -29,4 +31,5 @@ but that is not required to use Stripe.cfc in your own application.
 
 
 Changes:
-11/29/2011 - changes to Response.getRawResponse() to .getResult(), use a common view for errors, handle 400,404 status codes			
+11/29/2011 - 1.0.2,Response.errorCode
+11/29/2011 - 1.0.1,changes to Response.getRawResponse() to .getResult(), use a common view for errors, handle 400,404 status codes			
