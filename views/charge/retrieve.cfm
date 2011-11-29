@@ -15,10 +15,9 @@
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		amount: #dollarFormat(stripeResponse.getRawResponse().amount / 100)#<br />
+		amount: #dollarFormat(stripeResponse.getResult().amount / 100)#<br />
 	<cfelse>
-		errorType: #stripeResponse.getErrorType()#<br />
-		errorMessage: #stripeResponse.getErrorMessage()#<br />
+		#view('common/responseerror')#
 	</cfif>
 	<br />
 	<cfdump var=#stripeResponse# expand="no">	

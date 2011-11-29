@@ -20,11 +20,10 @@
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		ID: #stripeResponse.getRawResponse().id#<br />		
-		percent_off: #stripeResponse.getRawResponse().percent_off#<br />		
+		ID: #stripeResponse.getResult().id#<br />		
+		percent_off: #stripeResponse.getResult().percent_off#<br />		
 	<cfelse>
-		errorType: #stripeResponse.getErrorType()#<br />
-		errorMessage: #stripeResponse.getErrorMessage()#<br />
+		#view('common/responseerror')#
 	</cfif>
 	<br />
 	<cfdump var=#stripeResponse# expand="no">	

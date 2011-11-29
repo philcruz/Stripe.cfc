@@ -8,7 +8,7 @@
 	{
 		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
 		stripeResponse = stripe.refundCharge(id=rc.id, amount=rc.amount);
-		rawResponse = stripeResponse.getRawResponse();
+		result = stripeResponse.getResult();
 	}
 </cfscript>
 
@@ -17,13 +17,12 @@
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		<cfif isDefined('rawResponse.amount_refunded')>
-		amount refunded: #dollarFormat(rawResponse.amount_refunded / 100)#<br /> 
+		<cfif isDefined('result.amount_refunded')>
+		amount refunded: #dollarFormat(result.amount_refunded / 100)#<br /> 
 		</cfif>
-		amount: #dollarFormat(stripeResponse.getRawResponse().amount / 100)#<br />
+		amount: #dollarFormat(result.amount / 100)#<br />
 	<cfelse>
-		errorType: #stripeResponse.getErrorType()#<br />
-		errorMessage: #stripeResponse.getErrorMessage()#<br />
+		#view('common/responseerror')#
 	</cfif>
 	<br />
 	<cfdump var=#stripeResponse# expand="no">	

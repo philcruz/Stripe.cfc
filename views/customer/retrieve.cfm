@@ -15,11 +15,10 @@
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		description: #stripeResponse.getRawResponse().description#<br />
-		email: #stripeResponse.getRawResponse().email#<br />
+		description: #stripeResponse.getResult().description#<br />
+		email: #stripeResponse.getResult().email#<br />
 	<cfelse>
-		errorType: #stripeResponse.getErrorType()#<br />
-		errorMessage: #stripeResponse.getErrorMessage()#<br />
+		#view('common/responseerror')#
 	</cfif>
 	<br />
 	<cfdump var=#stripeResponse# expand="no">	

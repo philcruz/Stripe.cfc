@@ -16,12 +16,9 @@
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		id: #stripeResponse.getRawResponse().id#<br />
-<!--- 		description: #stripeResponse.getRawResponse().description#<br />
-		amount: #stripeResponse.getRawResponse().amount#<br /> --->
+		id: #stripeResponse.getResult().id#<br />
 	<cfelse>
-		errorType: #stripeResponse.getErrorType()#<br />
-		errorMessage: #stripeResponse.getErrorMessage()#<br />
+		#view('common/responseerror')#
 	</cfif>
 	<br />
 	<cfdump var=#stripeResponse# expand="no">	

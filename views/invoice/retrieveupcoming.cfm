@@ -8,11 +8,9 @@
 		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
 		stripeResponse = stripe.retrieveUpcomingInvoice(customer=rc.customer);
 		subscriptions = ArrayNew(1);
-		lines = stripeResponse.getRawResponse().lines;
+		lines = stripeResponse.getResult().lines;
 		if (isDefined('lines.subscriptions'))
-			subscriptions = stripeResponse.getRawResponse().lines["subscriptions"];
-		//invoiceItems = stripeResponse.getRawResponse().lines["invoiceitems"];
-		
+			subscriptions = stripeResponse.getResult().lines["subscriptions"];		
 	}
 </cfscript>
 
@@ -21,18 +19,14 @@
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		customer: #stripeResponse.getRawResponse().customer#<br />
-		subtotal: #stripeResponse.getRawResponse().subtotal#<br /> 
-		total: #stripeResponse.getRawResponse().total#<br /> 
-		<!--- <cfloop from="1" to="#arrayLen(invoiceItems)#" index="i">
-			&nbsp;&nbsp;#invoiceItems[i].description#, #invoiceItems[i].amount#<br />
-		</cfloop>--->
+		customer: #stripeResponse.getResult().customer#<br />
+		subtotal: #stripeResponse.getResult().subtotal#<br /> 
+		total: #stripeResponse.getResult().total#<br /> 
 		<cfloop from="1" to="#arrayLen(subscriptions)#" index="i">
 			&nbsp;&nbsp;#subscriptions[i].plan.id#,#subscriptions[i].plan.name#, #subscriptions[i].amount#<br />
 		</cfloop> 
 	<cfelse>
-		errorType: #stripeResponse.getErrorType()#<br />
-		errorMessage: #stripeResponse.getErrorMessage()#<br />
+		#view('common/responseerror')#
 	</cfif>
 	<br />
 	<cfdump var=#stripeResponse# expand="no">	

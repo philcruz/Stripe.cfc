@@ -25,4 +25,8 @@ Charges, Customers, Plans, Coupons, Subscriptions, Invoice Items, Invoices, and 
 Support: http://groups.google.com/group/stripecfc/
 	
 FW/1 (https://github.com/seancorfield/fw1) is the framework used for this web application
-but that is not required to use Stripe.cfc in your own application. 							
+but that is not required to use Stripe.cfc in your own application. 			
+
+
+Changes:
+11/29/2011 - changes to Response.getRawResponse() to .getResult(), use a common view for errors, handle 400,404 status codes			

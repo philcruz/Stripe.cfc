@@ -16,10 +16,9 @@
 <cfoutput>
 <cfif isDefined('stripeResponse')>
 	<cfif stripeResponse.getSuccess()>
-		canceled_at: #stripe.UTCToDate(stripeResponse.getRawResponse().canceled_at)#<br />		
+		canceled_at: #stripe.UTCToDate(stripeResponse.getResult().canceled_at)#<br />		
 	<cfelse>
-		errorType: #stripeResponse.getErrorType()#<br />
-		errorMessage: #stripeResponse.getErrorMessage()#<br />
+		#view('common/responseerror')#
 	</cfif>
 	<br />
 	<cfdump var=#stripeResponse# expand="no">	

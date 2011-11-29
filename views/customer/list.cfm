@@ -4,7 +4,7 @@
 	stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
 	stripeResponse = stripe.listCustomers(count=rc.count);
 	
-	customers = stripeResponse.getRawResponse().data;
+	customers = stripeResponse.getResult().data;
 </cfscript>
 
 <h2>List Customers</h2>

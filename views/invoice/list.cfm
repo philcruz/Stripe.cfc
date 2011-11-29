@@ -4,7 +4,7 @@
 	stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
 	stripeResponse = stripe.listInvoices(count=rc.count);
 	
-	invoices = stripeResponse.getRawResponse().data;
+	invoices = stripeResponse.getResult().data;
 </cfscript>
 
 <h2>List Invoices</h2>

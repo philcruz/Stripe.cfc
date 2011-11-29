@@ -1,19 +1,16 @@
 component accessors="true"
 {
 	property name="status";			//unprocessed, success, failure
-	property name="ID";
-	property name="object";
-	property name="liveMode";
-	property name="rawResponse";	
+	property name="result";			//the deserialized json object from the API call	
 	property name="errorType";
 	property name="errorMessage";
+	property name="rawResponse";	//cfhttp.filecontent of the API http request	
 		
 	function init()
 	{
 		setStatus("unprocessed");
 		setRawResponse("");
-		setID("");
-		setLiveMode(false);		
+		setResult(StructNew());		
 		return this;
 	}
 	

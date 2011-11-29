@@ -91,11 +91,10 @@
 <cfif isDefined('stripeResponse')>
 	<h3>#stripeResponseMessage#</h3>
 	<cfif stripeResponse.getSuccess()>
-		id: <a href="#buildUrl('charge.retrieve?id=#stripeResponse.getID()#')#">#stripeResponse.getID()#</a><br />
-		amount: #dollarFormat(stripeResponse.getRawResponse().amount / 100)#<br />
+		id: <a href="#buildUrl('charge.retrieve?id=#stripeResponse.getResult().id#')#">#stripeResponse.getResult().id#</a><br />
+		amount: #dollarFormat(stripeResponse.getResult().amount / 100)#<br />
 	<cfelse>
-		errorType: #stripeResponse.getErrorType()#<br />
-		errorMessage: #stripeResponse.getErrorMessage()#<br />
+		#view('common/responseerror')#
 	</cfif>
 	<cfdump var=#stripeResponse# expand="no">
 </cfif>

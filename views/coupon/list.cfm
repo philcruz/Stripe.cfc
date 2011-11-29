@@ -4,7 +4,7 @@
 	stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
 	stripeResponse = stripe.listCoupons(count=rc.count);
 	
-	coupons = stripeResponse.getRawResponse().data;
+	coupons = stripeResponse.getResult().data;
 </cfscript>
 
 <h2>List Coupons</h2>

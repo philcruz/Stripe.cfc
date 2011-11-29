@@ -27,7 +27,7 @@ component accessors="true"
 	
 	function getVersion()
 	{
-		return "1.0.0";
+		return "1.0.1";
 	}
 	
 	function updateSubscription(id,plan,prorate=true,trial_end="",card="")
@@ -290,17 +290,29 @@ component accessors="true"
 		var stripeResponse = createObject("component", "stripe.Response").init();
 		var httpResponse = doHttp(url=gatewayUrl, payload=arguments.payload, method=arguments.method);
 		var status = reReplace(httpResponse.statusCode, "[^0-9]", "", "ALL");
+		var response = "";
+		stripeResponse.setRawResponse(httpResponse);
 		
 		if (status NEQ "200")
 		{
-			stripeResponse.setErrorType("http_error");
-			stripeResponse.setErrorMessage("Gateway returned unknown response: #status#: #httpResponse.errorDetail#");
-			stripeResponse.setStatus("failure");
-			stripeResponse.setRawResponse(httpResponse);
+			switch(status)
+			{
+				case "400":
+				case "404":
+					response = deserializeJSON(httpResponse.fileContent);
+					stripeResponse.setStatus("failure");
+					stripeResponse.setErrorType(response.error.type);
+					stripeResponse.setErrorMessage(response.error.message);	
+					break;
+				default:
+					stripeResponse.setErrorType("http_error");
+					stripeResponse.setErrorMessage("Gateway returned unknown response: #status#: #httpResponse.errorDetail#");
+					stripeResponse.setStatus("failure");					
+			}			
 		}
 		else
 		{
-			var response = deserializeJSON(httpResponse.fileContent);
+			response = deserializeJSON(httpResponse.fileContent);
 		
 			if (structKeyExists( response, "error" ))
 			{	
@@ -313,10 +325,8 @@ component accessors="true"
 			{
 				// success					
 				stripeResponse.setStatus("success");
-				if (isDefined('response.ID')) stripeResponse.setID(response.ID);
-				if (isDefined('response.object')) stripeResponse.setObject(response.object);			
 			}
-			stripeResponse.setRawResponse(response);	
+			stripeResponse.setResult(response);	
 		}
 				
 		return stripeResponse;

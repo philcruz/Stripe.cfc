@@ -4,7 +4,7 @@
 	stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
 	stripeResponse = stripe.listPlans(count=rc.count);
 	
-	plans= stripeResponse.getRawResponse().data;
+	plans= stripeResponse.getResult().data;
 </cfscript>
 
 <h2>List Plans</h2>
