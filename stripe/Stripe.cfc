@@ -27,15 +27,27 @@ component accessors="true"
 	
 	function getVersion()
 	{
-		return "1.0.2";
+		return "1.0.3";
 	}
 	
+	function createMoney(required numeric cents, currency="usd")
+	{
+		return createObject("component", "Money").init(arguments.cents,arguments.currency);	
+	}
+	
+	function createCard(required string number,required exp_month,required exp_year,cvc="",name="",address_line1="",address_line2="",address_zip="",address_state="",address_country="")
+	{
+		var card = createObject("component", "Card").init(argumentcollection=arguments);
+		return card;	
+	}
 	function updateSubscription(id,plan,prorate=true,trial_end="",card="")
 	{
 		var gateway = variables.gatewayBaseUrl & "customers/" & trim(arguments.id) & "/subscription";
 		var payload = structNew();
 		payload.plan = arguments.plan;
-		payload.prorate = arguments.prorate;		
+		payload.prorate = arguments.prorate;
+		if (isObject(arguments.card) or ( isSimpleValue(arguments.card) and len(arguments.card) ))
+			payload.card = arguments.card;
 		return process(gatewayUrl=gateway, payload = payload, method="post");		
 	}
 	
@@ -71,24 +83,24 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 	
-	function createInvoiceItem(customer,amount,currency,description)
+	function createInvoiceItem(required customer,required Money money,required description)
 	{
 		var gateway = variables.gatewayBaseUrl & "invoiceitems";
 		var payload = structNew();					
 		payload.customer = arguments.customer;
-		payload.amount = arguments.amount;
-		payload.currency = arguments.currency;
+		payload.amount = arguments.money.getCents();
+		payload.currency = arguments.money.getCurrency();
 		payload.description = arguments.description;
 						
 		return process(gatewayUrl=gateway, payload = payload);
 	}
 	
-	function updateInvoiceItem(id,amount,currency="usd",description)
+	function updateInvoiceItem(required string id,required Money money,required string description)
 	{
 		var gateway = variables.gatewayBaseUrl & "invoiceitems/" & arguments.id;
 		var payload = structNew();					
-		payload.amount = arguments.amount;
-		payload.currency = arguments.currency;
+		payload.amount = arguments.money.getCents();
+		payload.currency = arguments.money.getCurrency();		
 		payload.description = arguments.description;
 						
 		return process(gatewayUrl=gateway, payload = payload);
@@ -154,16 +166,17 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 	
-	function createPlan(id,amount,currency,interval,name,trial_period_days)
+	function createPlan(required string id,required Money money,required interval,required name,trial_period_days)
 	{
 		var gateway = variables.gatewayBaseUrl & "plans";
 		var payload = structNew();					
 		payload.id = arguments.id;
-		payload.amount = arguments.amount;
-		payload.currency = arguments.currency;
+		payload.amount = arguments.money.getCents();
+		payload.currency = arguments.money.getCurrency();		
 		payload.interval = arguments.interval;
 		payload.name = arguments.name;
-		payload.trial_period_days = arguments.trial_period_days;
+		if (isDefined('arguments.trial_period_days') and isNumeric(arguments.trial_period_days))
+			payload.trial_period_days = arguments.trial_period_days;
 						
 		return process(gatewayUrl=gateway, payload = payload);
 	}
@@ -192,10 +205,14 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 	
-	function createCustomer(required string card,required string email, string description="")
+	/*
+	*
+	* @param card (required) Can be a string token or a Card object
+	*/
+	function createCustomer(required card,required string email, string description="")
 	{
 		var gateway = variables.gatewayBaseUrl & "customers";
-		var payload = structNew();					
+		var payload = structNew();				
 		payload.card = arguments.card;
 		payload.email = arguments.email;
 		payload.description = arguments.description;		
@@ -228,7 +245,7 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 	
-	function createCharge(required money,required string card,string description="")
+	function createCharge(required money,required card,string description="")
 	{
 		var gateway = variables.gatewayBaseUrl & "charges";
 		var payload = structNew();	
@@ -264,15 +281,18 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 	
-	function createToken(required string number,exp_month,exp_year,cvc,name="",address_line1="", address_line2="", address_zip="",address_state="",address_country="",amount="",currency="usd")
+	function createToken(required card,Money money)
 	{
 		var gateway = variables.gatewayBaseUrl & "tokens";
 		var payload = structNew();					
-		payload["card[number]"] = arguments.number;
-		payload["card[exp_month]"] = arguments.exp_month;
-		payload["card[exp_year]"] = arguments.exp_year;
-		payload["card[cvc]"] = arguments.cvc;		
-						
+		payload.card = arguments.card;
+		if (isDefined('arguments.money'))
+		{
+			payload.amount = arguments.money.getCents();
+			payload.currency = arguments.money.getCurrency();
+		}
+
+								
 		return process(gatewayUrl=gateway, payload = payload);
 	}
 	
@@ -340,7 +360,7 @@ component accessors="true"
 	 */
 	function doHttp(string url, struct payload, string method="post")
 	{
-		var httpService = new http(method=arguments.method, url=arguments.url, username="#variables.secretKey#", password=""); 		
+		var httpService = new http(method=arguments.method, url=arguments.url, username=variables.secretKey, password=""); 		
 		if (not structIsEmpty(arguments.payload))
 		{
 			var i = 0;
@@ -349,7 +369,32 @@ component accessors="true"
 			{	
 				//note Stripe API wants parameter names in lower case
 				//WriteLog(type="Information", file="stripe", text="#keys[i]#"); 
-				httpService.addParam(type="formfield",name="#lcase(keys[i])#",value="#arguments.payload[keys[i]]#"); 
+				if (lcase(keys[i]) NEQ "card" )
+				{
+					httpService.addParam(type="formfield",name="#lcase(keys[i])#",value=arguments.payload[keys[i]]);		
+				}
+				else
+				{
+					var card = arguments.payload["card"];
+					if (isObject(card))
+					{
+						httpService.addParam(type="formfield",name="card[number]",value=card.getNumber());
+						httpService.addParam(type="formfield",name="card[exp_month]",value=card.getExp_month());
+						httpService.addParam(type="formfield",name="card[exp_year]",value=card.getExp_year());
+						httpService.addParam(type="formfield",name="card[cvc]",value=card.getCvc());
+						httpService.addParam(type="formfield",name="card[name]",value=card.getName());
+						httpService.addParam(type="formfield",name="card[address_line1]",value=card.getAddress_line1());
+						httpService.addParam(type="formfield",name="card[address_line2]",value=card.getAddress_line2());
+						httpService.addParam(type="formfield",name="card[address_zip]",value=card.getAddress_zip());
+						httpService.addParam(type="formfield",name="card[address_state]",value=card.getAddress_state());
+						httpService.addParam(type="formfield",name="card[address_country]",value=card.getAddress_country());								
+					}
+					else
+					{
+						//must be a string token	
+						httpService.addParam(type="formfield",name="card",value=card);
+					}
+				}				
 			}
 		}		
 		return httpService.send().getPrefix(); 							

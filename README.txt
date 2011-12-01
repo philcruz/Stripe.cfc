@@ -6,13 +6,14 @@ in your own web application, you can copy the stripe folder to your webroot or c
 Basic usage is like:
 
     stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);										
-    money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("USD");					
+    money = stripe.createMoney(rc.amount*100);					
     stripeResponse = stripe.createCharge(money=money,card=rc.stripeToken,description="testing with the Stripe.cfc");
     			
 	//check the response and handle it as needed
 	if (stripeResponse.getSuccess())
 	{
 		//handle the success, you may want to update the database and redirect to a confirmation
+		id = stripeResponse.getResult().id; //get the id of the transaction out of the response
 	}
 	else
 	{
@@ -31,5 +32,8 @@ but that is not required to use Stripe.cfc in your own application.
 
 
 Changes:
+
+12/01/2011 - 1.03, add Card.cfc, add support for functions that optionally take a Card object, i.e. createCustomer()
+			 update methods that take ammount/currency to take Money object, to be consist with createCharge() 
 11/29/2011 - 1.0.2,Response.errorCode
 11/29/2011 - 1.0.1,changes to Response.getRawResponse() to .getResult(), use a common view for errors, handle 400,404 status codes			

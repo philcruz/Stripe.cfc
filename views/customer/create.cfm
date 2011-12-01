@@ -42,7 +42,7 @@
 		{									
 			try
 			{									
-				stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);													
+				stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);
 				stripeResponse = stripe.createCustomer(card=rc.stripeToken,email=rc.email,description=rc.name);
 				
 				//check the response and handle it as needed

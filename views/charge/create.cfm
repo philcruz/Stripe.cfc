@@ -44,7 +44,7 @@
 			try
 			{									
 				stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);										
-				money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("USD");					
+				money = stripe.createMoney(rc.amount*100);
 				stripeResponse = stripe.createCharge(money=money,card=rc.stripeToken,description="testing with the Stripe.cfc");
 				
 				//check the response and handle it as needed

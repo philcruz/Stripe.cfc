@@ -2,15 +2,15 @@
 <cfscript>
 	param name="rc.customer" default="";
 	param name="rc.isFormSubmitted" default="no";
-	param name="rc.amount" default="100";
-	param name="rc.currency" default="usd";
+	param name="rc.amount" default="10";
 	param name="rc.description" default="";
 
 	
 	if (rc.isFormSubmitted EQ "yes")
 	{
-		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
-		stripeResponse = stripe.createInvoiceItem(customer=rc.customer,amount=rc.amount,currency=rc.currency,description=rc.description);
+		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);
+		money = stripe.createMoney(rc.amount*100);				
+		stripeResponse = stripe.createInvoiceItem(customer=rc.customer,money=money,description=rc.description);
 	}
 </cfscript>
 
@@ -41,14 +41,10 @@
 	</p>
 	
 	<p>
-		Amount:<br />
+		Amount: (in $USD)<br />
 		<input type="text" name="amount" value="<cfoutput>#htmlEditFormat( rc.amount)#</cfoutput>" size="20" />
 	</p>
-	
-	<p>
-		Currency:<br />
-		<input type="text" name="currency" value="<cfoutput>#htmlEditFormat( rc.currency)#</cfoutput>" size="20" />
-	</p>
+		
 	
 	<p>
 		<input type="submit" value="Create Invoice Item" />

@@ -1,15 +1,21 @@
 
 <cfscript>
-	
 	param name="rc.isFormSubmitted" default="no";
 	param name="rc.number" default="4242424242424242";
-	param name="rc.amount" default="100";
-	param name="rc.currency" default="usd";
-	
+
 	if (rc.isFormSubmitted EQ "yes")
 	{
-		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
-		stripeResponse = stripe.createToken(number=rc.number,exp_month=rc.exp_month,exp_year=rc.exp_year,cvc=rc.cvc);
+		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);
+		card = stripe.createCard(number=rc.number,exp_month=rc.exp_month,exp_year=rc.exp_year,cvc=rc.cvc);
+		if (len(rc.amount))
+		{
+			money = createObject("component", "stripe.Money").init().setCents(rc.amount*100).setCurrency("usd");
+			stripeResponse = stripe.createToken(card,money);
+		}
+		else
+		{
+			stripeResponse = stripe.createToken(card);				
+		}		
 	}
 </cfscript>
 
@@ -45,6 +51,11 @@
 	<p>
 		Security Code:<br />
 		<input type="text" name="cvc" size="5" class="securityCode" value="123" />
+	</p>
+	
+	<p>
+		Amount: (in $USD)<br />
+		<input type="text" name="amount" size="5"  value="" /> (Optional)
 	</p>
 	
 	<p>

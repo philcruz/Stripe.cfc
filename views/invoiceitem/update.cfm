@@ -7,8 +7,9 @@
 	
 	if (rc.isFormSubmitted EQ "yes")
 	{
-		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);												
-		stripeResponse = stripe.updateInvoiceItem(id=rc.id,amount=rc.amount,description=rc.description);
+		stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);
+		money = stripe.createMoney(rc.amount*100);
+		stripeResponse = stripe.updateInvoiceItem(id=rc.id,money=money,description=rc.description);
 	}
 </cfscript>
 
@@ -41,7 +42,7 @@
 	</p>
 	
 	<p>
-		Amount:<br />
+		Amount: (in $USD)<br />
 		<input type="text" name="amount" value="<cfoutput>#htmlEditFormat( rc.amount)#</cfoutput>" size="20" />
 	</p>
 			
