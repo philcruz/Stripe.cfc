@@ -27,7 +27,7 @@ component accessors="true"
 	
 	function getVersion()
 	{
-		return "1.0.3";
+		return "1.0.4";
 	}
 	
 	function createMoney(required numeric cents, currency="usd")
@@ -207,15 +207,18 @@ component accessors="true"
 	
 	/*
 	*
-	* @param card (required) Can be a string token or a Card object
+	* @param card (optional) Can be a string token or a Card object
 	*/
-	function createCustomer(required card,required string email, string description="")
+	function createCustomer(card, string coupon="", string email="", string description="", string plan="", trial_end="")
 	{
 		var gateway = variables.gatewayBaseUrl & "customers";
 		var payload = structNew();				
-		payload.card = arguments.card;
-		payload.email = arguments.email;
-		payload.description = arguments.description;		
+		if (isDefined('arguments.card'))payload.card = arguments.card;
+		if (len(arguments.coupon)) 		payload.coupon = arguments.coupon;
+		if (len(arguments.email)) 		payload.email = arguments.email;
+		if (len(arguments.description))	payload.description = arguments.description;
+		if (len(arguments.plan))		payload.plan = arguments.plan;
+		if (len(arguments.trial_end))	payload.trial_end = dateToUTC(arguments.trial_end);
 						
 		return process(gatewayUrl=gateway, payload = payload);
 	}

@@ -9,6 +9,9 @@
 	param name="rc.name" type="string" default="John Doe";
 	param name="rc.email" type="string" default="john.doe@gmail.com";
 	param name="rc.amount" type="numeric" default="1";
+	param name="rc.coupon" default="";
+	param name="rc.plan" default="";
+	param name="rc.trial_end" default="";
 	param name="rc.stripeToken" type="string" default="";
 	param name="rc.isAjaxRequest" type="boolean" default="false";
 	
@@ -43,7 +46,7 @@
 			try
 			{									
 				stripe = createObject("component", "stripe.Stripe").init(secretKey=application.stripeSecretKey);
-				stripeResponse = stripe.createCustomer(card=rc.stripeToken,email=rc.email,description=rc.name);
+				stripeResponse = stripe.createCustomer(card=rc.stripeToken,email=rc.email,description=rc.name,coupon=rc.coupon,plan=rc.plan,trial_end=rc.trial_end);
 				
 				//check the response and handle it as needed
 				if (stripeResponse.getSuccess())
@@ -89,7 +92,7 @@
 <cfif isDefined('stripeResponse')>
 	<h3>#stripeResponseMessage#</h3>
 	<cfif stripeResponse.getSuccess()>
-		id: <a href="#buildUrl('charge.retrieve?id=#stripeResponse.getResult().id#')#">#stripeResponse.getResult().id#</a><br />
+		id: <a href="#buildUrl('customer.retrieve?id=#stripeResponse.getResult().id#')#">#stripeResponse.getResult().id#</a><br />
 	<cfelse>
 		#view('common/responseerror')#
 	</cfif>
@@ -128,6 +131,21 @@
 	<p>
 		Security Code:<br />
 		<input type="text" size="5" class="securityCode" value="123" />
+	</p>
+	
+	<p>
+		Coupon:<br />
+		<input type="text" name="coupon" value="#htmlEditFormat( rc.coupon)#" size="20" />
+	</p>
+	
+	<p>
+		Plan:<br />
+		<input type="text" name="plan" value="#htmlEditFormat( rc.plan )#" size="20" />
+	</p>
+	
+	<p>
+		Trial End (date):<br />
+		<input type="text" name="trial_end" value="#htmlEditFormat( rc.trial_end)#" size="20" />
 	</p>
 
 	<p>

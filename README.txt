@@ -32,8 +32,8 @@ but that is not required to use Stripe.cfc in your own application.
 
 
 Changes:
-
-12/01/2011 - 1.03, add Card.cfc, add support for functions that optionally take a Card object, i.e. createCustomer()
+12/15/2011 - 1.0.4, add missing optional parameters for createCustomer()
+12/01/2011 - 1.0.3, add Card.cfc, add support for functions that optionally take a Card object, i.e. createCustomer()
 			 update methods that take ammount/currency to take Money object, to be consist with createCharge() 
 11/29/2011 - 1.0.2,Response.errorCode
 11/29/2011 - 1.0.1,changes to Response.getRawResponse() to .getResult(), use a common view for errors, handle 400,404 status codes			
