@@ -166,7 +166,7 @@ component accessors="true"
 		return process(gatewayUrl=gateway, payload = payload, method="get");
 	}
 	
-	function createPlan(required string id,required Money money,required interval,required name,trial_period_days)
+	function createPlan(required string id,required Money money,required interval,required name,interval_count, trial_period_days)
 	{
 		var gateway = variables.gatewayBaseUrl & "plans";
 		var payload = structNew();					
@@ -177,6 +177,9 @@ component accessors="true"
 		payload.name = arguments.name;
 		if (isDefined('arguments.trial_period_days') and isNumeric(arguments.trial_period_days))
 			payload.trial_period_days = arguments.trial_period_days;
+			
+		if (isDefined('arguments.interval_count') and isNumeric(arguments.interval_count))
+			payload.interval_count = interval_count;
 						
 		return process(gatewayUrl=gateway, payload = payload);
 	}
