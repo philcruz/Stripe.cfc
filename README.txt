@@ -1,4 +1,7 @@
 
+** Stripe.cfc was rolled into CFPAYMENT (https://github.com/ghidinelli/cfpayment) and is not being actively maintained. **
+
+
 Stripe.cfc is a ColdFusion api binding for http://stripe.com.
 
 This project is a complete web application and expects to live in its own webroot. To use Stripe.cfc
